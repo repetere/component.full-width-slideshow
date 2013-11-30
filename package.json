@@ -1,0 +1,43 @@
+{
+  "title": "Periodic Component Full width slideshow",
+  "name": "periodic.component.full-width-slideshow",
+  "description": "A very simple 100% width slider that scales down to mobile.",
+  "version": "0.0.1",
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.x"
+  },
+  "scripts": {
+    "test": "mocha -R spec --recursive",
+    "install": "grunt copy",
+    "uninstall": "grunt clean",
+    "watch": "grunt watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:getperiodic/component.full-width-slideshow.git"
+  },
+  "dependencies": {
+    "classie": "0.0.1",
+    "browsernizr": "~1.0.1",
+    "grunt-contrib-copy": "0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "util-extend": "~1.0.1",
+    "ejs": "~0.8.5"
+  },
+  "devDependencies": {
+    "chai": "1.5.0",
+    "grunt": "0.4.1",
+    "grunt-contrib-jshint": "0.4.3",
+    "grunt-contrib-copy": "0.4.1",
+    "grunt-simple-mocha": "0.4.0",
+    "grunt-jsbeautifier": "0.1.7",
+    "mocha": "1.9.0"
+  },
+  "keywords": [
+    "Periodic Decoupled Framework",
+    "ui",
+    "ux",
+    "dom"
+  ]
+}

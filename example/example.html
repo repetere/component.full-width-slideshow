@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	 	<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>Periodic: Web Component - full width slideshow</title>
+		<meta name="description" content="A very simple 100% width slider that scales down to mobile." />
+		<meta name="keywords" content="Periodic Decoupled Framework, ui, ux, dom" />
+		<meta name="author" content="Periodic" />
+		<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="../dist/stylesheets/component.full-width_slideshow.css">
+		<link rel="stylesheet" type="text/css" href="stylesheets/example.css">
+		<script type="text/javascript" src="scripts/example.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div id="cbp-fwslider" class="cbp-fwslider">
+						<ul>
+							<li><a href="#"><img src="FullWidthImageSlider/images/1.jpg" alt="img01"/></a></li>
+							<li><a href="#"><img src="FullWidthImageSlider/images/2.jpg" alt="img02"/></a></li>
+							<li><a href="#"><img src="FullWidthImageSlider/images/3.jpg" alt="img03"/></a></li>
+							<li><a href="#"><img src="FullWidthImageSlider/images/4.jpg" alt="img04"/></a></li>
+							<li><a href="#"><img src="FullWidthImageSlider/images/5.jpg" alt="img05"/></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script id="component-template" type="javscript/template">
+			<div id="<%= config.html.dom_id %>" class="<%= config.html.dom_id %> p_c_lvs-id">
+				<header><%= config.html.dom_title %></header>
+				<% for(x in content){
+					var media_container="",
+						content_container="", 
+						left_content="",
+						right_content=""
+						main_content_side=(x%2==0) ? "left":"right",
+						main_media_side=(x%2==0) ? "right":"left"; ; 
+
+					content_container='<article class="p_c_lvs-side p_c_lvs-side-'+main_content_side+'">'
+						+'<h2>'+content[x].title+'</h2>'
+						+'<p class="small">'+content[x].dek+'<p>'
+						+'<div class="article-meta">'
+							+'<time>'+content[x].date+'</time>'
+							+'<small>'+content[x].author+'</small>'
+							+'<small>'+content[x].byline+'</small>'
+						+'</div>'
+						+'<p>'+content[x].content+'</p>'
+						+'</article>';
+
+					media_container='<figure class="p_c_lvs-side p_c_lvs-side-'+main_media_side+'">'+content[x].media+'</figure>';
+
+					if (main_content_side=="left"){
+						right_content=media_container;
+						left_content=content_container;
+					}
+					else{
+						left_content=media_container;
+						right_content=content_container;
+					}
+
+					%>
+					<section id="<%= config.html.dom_id %>-section-<%= x %>" class="p_c_lvs-section <%= config.html.dom_id %>">
+						<%- left_content %>
+						<%- right_content %>
+					</section>
+					<%
+				}%>
+			</div>
+		</script>
+
+	</body>
+</html>
