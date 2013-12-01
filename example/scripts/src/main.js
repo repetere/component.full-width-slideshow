@@ -10,6 +10,7 @@ var module1 = webapp,
 
 window.onload = function(){
 	fullWidthSlideshow1 = new fullWidthSlideshow({element:"cbp-fwslider"});
+	fullWidthSlideshow2 = new fullWidthSlideshow({element:"cbp-fwslider2"});
 	console.log("works");
 	// async.parallel({
 	//     template: function(callback){
