@@ -5,10 +5,12 @@ var fullWidthSlideshow = require('../../../index'),
 	webapp = require('./webapp');
 
 var module1 = webapp,
-	fullWidthSlideshow1 = new fullWidthSlideshow(),
-	fullWidthSlideshow2 = new fullWidthSlideshow();
+	fullWidthSlideshow1 = false,
+	fullWidthSlideshow2 = false;
 
 window.onload = function(){
+	fullWidthSlideshow1 = new fullWidthSlideshow({element:"cbp-fwslider"});
+	console.log("works");
 	// async.parallel({
 	//     template: function(callback){
 	//     module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
