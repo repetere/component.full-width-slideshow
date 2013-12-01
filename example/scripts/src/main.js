@@ -9,27 +9,30 @@ var module1 = webapp,
 	fullWidthSlideshow2 = false;
 
 window.onload = function(){
-	fullWidthSlideshow1 = new fullWidthSlideshow({element:"cbp-fwslider"});
-	fullWidthSlideshow2 = new fullWidthSlideshow({element:"cbp-fwslider2"});
-	console.log("works");
-	// async.parallel({
-	//     template: function(callback){
-	//     module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
-	//     },
-	//     componentData: function(callback){
- //            module1.grabData('https://s3.amazonaws.com/gpsampledata/component.list-view-scroll/contentspec.json',callback)
-	//     }
-	// },
-	// function(err, results) {
-	// 	if(err){
-	// 		console.log(err);
-	// 	}
-	// 	listviewcroll1.render( results.template, results.componentData, "scrollerhtml");
+	async.parallel({
+	    template: function(callback){
+	    module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
+	    },
+	    componentData: function(callback){
+            module1.grabData('https://s3.amazonaws.com/gpsampledata/component.list-view-scroll/contentspec.json',callback);
+	    }
+	},
+	function(err, results) {
+		if(err){
+			console.log(err);
+		}
+		console.log("results",results);
 
-	// 	var data2 = results.componentData;
-	// 	data2.config.html.dom_id="anotherScroller";
-	// 	listviewcroll2.render( results.template, data2, "anotherscrollerhtml");
-	// });
+		webapp.render( results.template, results.componentData, "slider1");
+
+		// var data2 = results.componentData;
+		// data2.config.html.dom_id="anotherScroller";
+		// listviewcroll2.render( results.template, data2, "anotherscrollerhtml");
+
+		fullWidthSlideshow1 = new fullWidthSlideshow({element:"p_c_lvs-id"});
+		// fullWidthSlideshow2 = new fullWidthSlideshow({element:"cbp-fwslider2"});
+		// console.log("works");
+	});
 };
 
 // module1.on("grabbedData",function(){

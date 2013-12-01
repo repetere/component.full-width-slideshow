@@ -17,70 +17,35 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<div id="cbp-fwslider" class="cbp-fwslider">
-						<ul>
-							<li><a href="#"><img src="FullWidthImageSlider/images/1.jpg" alt="img01"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/2.jpg" alt="img02"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/3.jpg" alt="img03"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/4.jpg" alt="img04"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/5.jpg" alt="img05"/></a></li>
-						</ul>
-					</div>
+					<div id="slider1"></div>
 				</div>
 				<div class="col-md-12">
-					<div id="cbp-fwslider2" class="cbp-fwslider2 cbp-fwslider">
-						<ul>
-							<li><a href="#"><img src="FullWidthImageSlider/images/1.jpg" alt="img01"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/2.jpg" alt="img02"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/3.jpg" alt="img03"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/4.jpg" alt="img04"/></a></li>
-							<li><a href="#"><img src="FullWidthImageSlider/images/5.jpg" alt="img05"/></a></li>
-						</ul>
-					</div>
+					
 				</div>
 			</div>
 		</div>
 
 		<script id="component-template" type="javscript/template">
-			<div id="<%= config.html.dom_id %>" class="<%= config.html.dom_id %> p_c_lvs-id">
+			<div id="<%= config.html.dom_id %>" class="<%= config.html.dom_id %> cbp-fwslider">
 				<header><%= config.html.dom_title %></header>
-				<% for(x in content){
-					var media_container="",
-						content_container="", 
-						left_content="",
-						right_content=""
-						main_content_side=(x%2==0) ? "left":"right",
-						main_media_side=(x%2==0) ? "right":"left"; ; 
-
-					content_container='<article class="p_c_lvs-side p_c_lvs-side-'+main_content_side+'">'
-						+'<h2>'+content[x].title+'</h2>'
-						+'<p class="small">'+content[x].dek+'<p>'
-						+'<div class="article-meta">'
-							+'<time>'+content[x].date+'</time>'
-							+'<small>'+content[x].author+'</small>'
-							+'<small>'+content[x].byline+'</small>'
-						+'</div>'
-						+'<p>'+content[x].content+'</p>'
-						+'</article>';
-
-					media_container='<figure class="p_c_lvs-side p_c_lvs-side-'+main_media_side+'">'+content[x].media+'</figure>';
-
-					if (main_content_side=="left"){
-						right_content=media_container;
-						left_content=content_container;
-					}
-					else{
-						left_content=media_container;
-						right_content=content_container;
-					}
-
-					%>
-					<section id="<%= config.html.dom_id %>-section-<%= x %>" class="p_c_lvs-section <%= config.html.dom_id %>">
-						<%- left_content %>
-						<%- right_content %>
-					</section>
+				<ul>
+				<% for(x in content){ %>
+					<li id="<%= config.html.dom_id %>-li-<%= x %>" class="cbp-fwslider-li <%= config.html.dom_id %>">
+						<article>
+							<h2><%=content[x].title%></h2>
+							<figure><%-content[x].media%></figure>
+							<p class="small"><%=content[x].dek%><p>
+							<div class="article-meta">
+								<time><%=content[x].date%></time>
+								<small><%=content[x].author%></small>
+								<small><%=content[x].byline%></small>
+							</div>
+							<section><%-content[x].content%></section>
+						</article>
+					</li>
 					<%
 				}%>
+				</ul>
 			</div>
 		</script>
 
