@@ -1,5 +1,5 @@
 /**
- * jquery.cbpFWSlider.js v1.0.0
+ * jquery.p_c_fws.js v1.0.0
  * http://www.codrops.com
  *
  * Licensed under the MIT license.
@@ -15,23 +15,23 @@
 	// global
 	var Modernizr = window.Modernizr;
 
-	$.CBPFWSlider = function( options, element ) {
+	$.p_c_fws = function( options, element ) {
 		this.$el = $( element );
 		this._init( options );
 	};
 
 	// the options
-	$.CBPFWSlider.defaults = {
+	$.p_c_fws.defaults = {
 		// default transition speed (ms)
 		speed : 500,
 		// default transition easing
 		easing : 'ease'
 	};
 
-	$.CBPFWSlider.prototype = {
+	$.p_c_fws.prototype = {
 		_init : function( options ) {
 			// options
-			this.options = $.extend( true, {}, $.CBPFWSlider.defaults, options );
+			this.options = $.extend( true, {}, $.p_c_fws.defaults, options );
 			// cache some elements and initialize some variables
 			this._config();
 			// initialize/bind the events
@@ -66,7 +66,7 @@
 				};
 
 			if( this.support ) {
-				this.transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ] + '.cbpFWSlider';
+				this.transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ] + '.p_c_fws';
 				this.transformName = transformNames[ Modernizr.prefixed( 'transform' ) ];
 
 				console.log("this.transEndEventName",this.transEndEventName)
@@ -109,9 +109,9 @@
 			
 			var self = this;
 			if( this.itemsCount > 1 ) {
-				this.$navPrev.on( 'click.cbpFWSlider', $.proxy( this._navigate, this, 'previous' ) );
-				this.$navNext.on( 'click.cbpFWSlider', $.proxy( this._navigate, this, 'next' ) );
-				this.$navDots.on( 'click.cbpFWSlider', function() { self._jump( $( this ).index() ); } );
+				this.$navPrev.on( 'click.p_c_fws', $.proxy( this._navigate, this, 'previous' ) );
+				this.$navNext.on( 'click.p_c_fws', $.proxy( this._navigate, this, 'next' ) );
+				this.$navDots.on( 'click.p_c_fws', function() { self._jump( $( this ).index() ); } );
 			}
 
 		},
@@ -212,18 +212,18 @@
 		}
 	};
 
-	$.fn.cbpFWSlider = function( options ) {
+	$.fn.p_c_fws = function( options ) {
 		if ( typeof options === 'string' ) {
 			var args = Array.prototype.slice.call( arguments, 1 );
 			this.each(function() {
-				var instance = $.data( this, 'cbpFWSlider' );
+				var instance = $.data( this, 'p_c_fws' );
 				if ( !instance ) {
-					logError( "cannot call methods on cbpFWSlider prior to initialization; " +
+					logError( "cannot call methods on p_c_fws prior to initialization; " +
 					"attempted to call method '" + options + "'" );
 					return;
 				}
 				if ( !$.isFunction( instance[options] ) || options.charAt(0) === "_" ) {
-					logError( "no such method '" + options + "' for cbpFWSlider instance" );
+					logError( "no such method '" + options + "' for p_c_fws instance" );
 					return;
 				}
 				instance[ options ].apply( instance, args );
@@ -231,12 +231,12 @@
 		} 
 		else {
 			this.each(function() {	
-				var instance = $.data( this, 'cbpFWSlider' );
+				var instance = $.data( this, 'p_c_fws' );
 				if ( instance ) {
 					instance._init();
 				}
 				else {
-					instance = $.data( this, 'cbpFWSlider', new $.CBPFWSlider( options, this ) );
+					instance = $.data( this, 'p_c_fws', new $.p_c_fws( options, this ) );
 				}
 			});
 		}

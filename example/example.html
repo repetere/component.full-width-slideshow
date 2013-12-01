@@ -26,11 +26,11 @@
 		</div>
 
 		<script id="component-template" type="javscript/template">
-			<div id="<%= config.html.dom_id %>" class="<%= config.html.dom_id %> cbp-fwslider">
+			<div id="<%= config.html.dom_id %>" class="<%= config.html.dom_id %> p_c_fws-slideshow">
 				<header><%= config.html.dom_title %></header>
 				<ul>
 				<% for(x in content){ %>
-					<li id="<%= config.html.dom_id %>-li-<%= x %>" class="cbp-fwslider-li <%= config.html.dom_id %>">
+					<li id="<%= config.html.dom_id %>-li-<%= x %>" class="p_c_fws-slideshow-li <%= config.html.dom_id %>">
 						<article>
 							<h2><%=content[x].title%></h2>
 							<figure><%-content[x].media%></figure>

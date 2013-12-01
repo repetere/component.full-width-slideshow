@@ -11,7 +11,7 @@ var module1 = webapp,
 window.onload = function(){
 	async.parallel({
 	    template: function(callback){
-	    module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
+			module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
 	    },
 	    componentData: function(callback){
             module1.grabData('https://s3.amazonaws.com/gpsampledata/component.list-view-scroll/contentspec.json',callback);
@@ -21,8 +21,6 @@ window.onload = function(){
 		if(err){
 			console.log(err);
 		}
-		console.log("results",results);
-
 		webapp.render( results.template, results.componentData, "slider1");
 
 		// var data2 = results.componentData;
@@ -30,18 +28,17 @@ window.onload = function(){
 		// listviewcroll2.render( results.template, data2, "anotherscrollerhtml");
 
 		fullWidthSlideshow1 = new fullWidthSlideshow({element:"p_c_lvs-id"});
-		// fullWidthSlideshow2 = new fullWidthSlideshow({element:"cbp-fwslider2"});
-		// console.log("works");
+		// fullWidthSlideshow2 = new fullWidthSlideshow({element:"p_c_fws-slideshow2"});
 	});
 };
 
-// module1.on("grabbedData",function(){
-// 	console.log("loaded data")
-// });
+module1.on("grabbedData",function(){
+	console.log("loaded data");
+});
 
-// module1.on("grabbedTemplate",function(){
-// 	console.log("loaded template")
-// });
+module1.on("grabbedTemplate",function(){
+	console.log("loaded template");
+});
 
 // listviewcroll1.on("renderedComponent",function(){
 // 	listviewcroll1.init();

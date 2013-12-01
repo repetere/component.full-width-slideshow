@@ -2706,7 +2706,7 @@ var module1 = webapp,
 window.onload = function(){
 	async.parallel({
 	    template: function(callback){
-	    module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
+			module1.grabTemplate(window.document.getElementById('component-template').innerHTML,callback);
 	    },
 	    componentData: function(callback){
             module1.grabData('https://s3.amazonaws.com/gpsampledata/component.list-view-scroll/contentspec.json',callback);
@@ -2716,8 +2716,6 @@ window.onload = function(){
 		if(err){
 			console.log(err);
 		}
-		console.log("results",results);
-
 		webapp.render( results.template, results.componentData, "slider1");
 
 		// var data2 = results.componentData;
@@ -2725,18 +2723,17 @@ window.onload = function(){
 		// listviewcroll2.render( results.template, data2, "anotherscrollerhtml");
 
 		fullWidthSlideshow1 = new fullWidthSlideshow({element:"p_c_lvs-id"});
-		// fullWidthSlideshow2 = new fullWidthSlideshow({element:"cbp-fwslider2"});
-		// console.log("works");
+		// fullWidthSlideshow2 = new fullWidthSlideshow({element:"p_c_fws-slideshow2"});
 	});
 };
 
-// module1.on("grabbedData",function(){
-// 	console.log("loaded data")
-// });
+module1.on("grabbedData",function(){
+	console.log("loaded data");
+});
 
-// module1.on("grabbedTemplate",function(){
-// 	console.log("loaded template")
-// });
+module1.on("grabbedTemplate",function(){
+	console.log("loaded template");
+});
 
 // listviewcroll1.on("renderedComponent",function(){
 // 	listviewcroll1.init();
@@ -2877,10 +2874,7 @@ fullWidthSlideshow.prototype._config = function() {
 	this.$items = this.$list.getElementsByTagName('li');
 	// total number of items
 	this.itemsCount = this.$items.length;
-	// console.log("this.itemsCount",this.itemsCount);
-
 	// support for CSS Transitions & transforms
-	// console.log("Modernizr",Modernizr);
 
 	this.support = Modernizr.csstransitions && Modernizr.csstransforms;
 	this.support3d = Modernizr.csstransforms3d;
@@ -2902,9 +2896,8 @@ fullWidthSlideshow.prototype._config = function() {
 		};
 
 	if( this.support ) {
-		this.transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ] + '.cbpFWSlider';
+		this.transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ] + '.p_c_fws';
 		this.transformName = transformNames[ Modernizr.prefixed( 'transform' ) ];
-		// console.log(this.support);
 	}
 	// current and old item´s index
 	this.current = 0;
@@ -2928,19 +2921,19 @@ fullWidthSlideshow.prototype._config = function() {
 	if( this.itemsCount > 1 ) {
 		// add navigation arrows (the previous arrow is not shown initially):
 		var nav = document.createElement('nav');
-		nav.innerHTML='<span class="cbp-fwprev" style="display:none;">&lt;</span><span class="cbp-fwnext">&gt;</span>';
+		nav.innerHTML='<span class="p_c_fws-slideprev" style="display:none;">&lt;</span><span class="p_c_fws-slidenext">&gt;</span>';
 		this.$el.appendChild(nav);
-		this.$navPrev = this.$el.getElementsByClassName("cbp-fwprev")[0];
-		this.$navNext = this.$el.getElementsByClassName("cbp-fwnext")[0];
+		this.$navPrev = this.$el.getElementsByClassName("p_c_fws-slideprev")[0];
+		this.$navNext = this.$el.getElementsByClassName("p_c_fws-slidenext")[0];
 
 		var dots = '';
 		for( var i = 0; i < this.itemsCount; ++i ) {
-			// current dot will have the class cbp-fwcurrent
-			var dot = i === this.current ? '<span class="cbp-fwcurrent" data-itr="'+i+'"></span>' : '<span data-itr="'+i+'"></span>';
+			// current dot will have the class p_c_fws-cuurentdot
+			var dot = i === this.current ? '<span class="p_c_fws-cuurentdot" data-itr="'+i+'"></span>' : '<span data-itr="'+i+'"></span>';
 			dots += dot;
 		}
 		var navDots = document.createElement('div');
-		navDots.setAttribute("class", "cbp-fwdots");
+		navDots.setAttribute("class", "p_c_fws-slidedots");
 		// console.log("navDots",navDots);
 		navDots.innerHTML =dots;
 		this.$el.appendChild(navDots);
@@ -2973,7 +2966,7 @@ fullWidthSlideshow.prototype._initEvents = function() {
 				this._navigate('next');
 			}.bind(this));
 
-		this.$navDotDom = this.$el.getElementsByClassName("cbp-fwdots")[0];
+		this.$navDotDom = this.$el.getElementsByClassName("p_c_fws-slidedots")[0];
 
 		this.$navDotDom.addEventListener('click',function(event){
 			var target = getEventTarget(event);
@@ -3000,6 +2993,8 @@ fullWidthSlideshow.prototype._navigate = function( direction ) {
 	else if( direction === 'previous' && this.current > 0 ) {
 		--this.current;
 	}
+	this.emit("navigatedComponent",this.current);
+
 	// slide
 	this._slide();
 	// console.log("this._slide()",this._slide());
@@ -3041,10 +3036,10 @@ fullWidthSlideshow.prototype._toggleNavControls = function() {
 		default : this.$navNext.style.display="block"; this.$navPrev.style.display="block"; break;
 	}
 	// highlight navigation dot
-	classie.remove( this.$navDots[this.old], 'cbp-fwcurrent' );
-	classie.add( this.$navDots[this.current], 'cbp-fwcurrent' );
+	classie.remove( this.$navDots[this.old], 'p_c_fws-cuurentdot' );
+	classie.add( this.$navDots[this.current], 'p_c_fws-cuurentdot' );
 
-	// this.$navDots[this.old].removeClass( 'cbp-fwcurrent' ).end().eq( this.current ).addClass( 'cbp-fwcurrent' );
+	// this.$navDots[this.old].removeClass( 'p_c_fws-cuurentdot' ).end().eq( this.current ).addClass( 'p_c_fws-cuurentdot' );
 
 };
 fullWidthSlideshow.prototype._jump = function( position ) {
