@@ -59,7 +59,7 @@ module.exports = function(grunt) {
       main: {
         files: [
           {expand: true,cwd: 'dist', src: ['**'], dest: '../../public/periodic/component.full-width-slideshow/'},//
-          {expand: true,cwd: 'lib', src: ['full-width-slideshow.js'], dest: '../../public/periodic/full-width-slideshow/'}
+          {expand: true,cwd: 'lib', src: ['component.full-width-slideshow.js'], dest: '../../public/periodic/component.full-width-slideshow/'}
         ]
       }
     },
