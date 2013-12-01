@@ -68,6 +68,9 @@
 			if( this.support ) {
 				this.transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ] + '.cbpFWSlider';
 				this.transformName = transformNames[ Modernizr.prefixed( 'transform' ) ];
+
+				console.log("this.transEndEventName",this.transEndEventName)
+				console.log("this.transformName",this.transformName)
 			}
 			// current and old item´s index
 			this.current = 0;
@@ -138,6 +141,7 @@
 			this._toggleNavControls();
 			// translate value
 			var translateVal = -1 * this.current * 100 / this.itemsCount;
+	console.log("translateVal",translateVal);
 			if( this.support ) {
 				this.$list.css( 'transform', this.support3d ? 'translate3d(' + translateVal + '%,0,0)' : 'translate(' + translateVal + '%)' );
 			}
@@ -146,6 +150,9 @@
 			}
 			
 			var transitionendfn = $.proxy( function() {
+						console.log(this);
+
+				console.log("called transitionendfn");
 				this.isAnimating = false;
 			}, this );
 
