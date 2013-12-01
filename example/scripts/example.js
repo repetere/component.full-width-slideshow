@@ -2717,13 +2717,13 @@ window.onload = function(){
 			console.log(err);
 		}
 		webapp.render( results.template, results.componentData, "slider1");
-
-		// var data2 = results.componentData;
-		// data2.config.html.dom_id="anotherScroller";
-		// listviewcroll2.render( results.template, data2, "anotherscrollerhtml");
-
 		fullWidthSlideshow1 = new fullWidthSlideshow({element:"p_c_lvs-id"});
-		// fullWidthSlideshow2 = new fullWidthSlideshow({element:"p_c_fws-slideshow2"});
+
+		var data2 = results.componentData;
+		data2.config.html.dom_id="p_c_lvs-id2";
+		data2.config.html.preview=true;
+		webapp.render( results.template, data2, "slider2");
+		fullWidthSlideshow2 = new fullWidthSlideshow({element:"p_c_lvs-id2"});
 	});
 };
 

@@ -2,7 +2,7 @@
   "title": "Periodic Component Full width slideshow",
   "name": "periodic.component.full-width-slideshow",
   "description": "A very simple 100% width slider that scales down to mobile.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
