@@ -25,8 +25,8 @@ window.onload = function(){
 		fullWidthSlideshow1 = new fullWidthSlideshow({element:"p_c_lvs-id"});
 
 		var data2 = results.componentData;
-		data2.config.html.dom_id="p_c_lvs-id2";
-		data2.config.html.preview=true;
+		data2.contentspec.config.html.dom_id="p_c_lvs-id2";
+		data2.contentspec.config.html.preview=true;
 		webapp.render( results.template, data2, "slider2");
 		fullWidthSlideshow2 = new fullWidthSlideshow({element:"p_c_lvs-id2"});
 	});

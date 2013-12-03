@@ -27,6 +27,10 @@
 		</div>
 
 		<script id="component-template" type="javscript/template">
+			<% 
+				config = contentspec.config;
+				content = contentspec.content;
+			%>
 			<div id="<%= config.html.dom_id %>" class="<%= config.html.dom_id %> p_c_fws-slideshow <% if(config.html.preview===true){%> p_c_fws-slideshow-preview <%}%>">
 				<% 
 				if(config.html.preview===true){ %>
