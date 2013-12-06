@@ -2943,7 +2943,6 @@ fullWidthSlideshow.prototype._initEvents = function() {
 	var self = this;
 	if(this.options){
 		var hammertime = new Hammer(this.$el,{
-	        drag_block_vertical: true,
 	        drag_block_horizontal: true
 	    });
 
