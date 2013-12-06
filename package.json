@@ -2,7 +2,7 @@
   "title": "Periodic Component Full width slideshow",
   "name": "periodic.component.full-width-slideshow",
   "description": "A very simple 100% width slider that scales down to mobile.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "classie": "0.0.1",
-    "browsernizr": "~1.0.1",
     "grunt-contrib-copy": "0.4.1",
     "grunt-contrib-clean": "~0.5.0",
     "util-extend": "~1.0.1",
     "ejs": "~0.8.5",
-    "hammerjs": "~1.0.5"
+    "hammerjs": "~1.0.5",
+    "detectcss": "~1.0.2"
   },
   "devDependencies": {
     "chai": "1.5.0",
