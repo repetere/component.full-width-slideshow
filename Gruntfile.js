@@ -1,112 +1,162 @@
 /*
  * component.full-width-slideshow
- * http://github.amexpub.com/modules/component.full-width-slideshow
+ * http://github.com/typesettin/component.full-width-slideshow
  *
- * Copyright (c) 2013 Amex Pub. All rights reserved.
+ * Copyright (c) 2014 Yaw Joseph Etse. All rights reserved.
  */
 
 'use strict';
-var exec = require('child_process').exec;
+var path = require('path');
 
-module.exports = function(grunt) {
-  grunt.initConfig({
-    jsbeautifier: {
-      files: ["<%= jshint.all %>"],
-      options: {
-        "indent_size": 2,
-        "indent_char": " ",
-        "indent_level": 0,
-        "indent_with_tabs": false,
-        "preserve_newlines": true,
-        "max_preserve_newlines": 10,
-        "brace_style": "collapse",
-        "keep_array_indentation": false,
-        "keep_function_indentation": false,
-        "space_before_conditional": true,
-        "eval_code": false,
-        "indent_case": false,
-        "unescape_strings": false,
-        "space_after_anon_function": true
-      }
-    },
-    simplemocha: {
-      options: {
-        globals: ['should'],
-        timeout: 3000,
-        ignoreLeaks: false,
-        ui: 'bdd',
-        reporter: 'tap'
-      },
-      all: {
-        src: 'test/**/*.js'
-      }
-    },
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc'
-      },
-      all: [
-        'Gruntfile.js',
-        'config/**/*.js',
-        'example/scripts/src/**/*.js',
-        'index.js',
-        'lib/**/*.js',
-        'routes/**/*.js',
-        'test/**/*.js'
-      ]
-    },
-    copy: {
-      main: {
-        files: [
-          {expand: true,cwd: 'dist', src: ['**'], dest: '../../public/periodic/component.full-width-slideshow/'},//
-          {expand: true,cwd: 'lib', src: ['component.full-width-slideshow.js'], dest: '../../public/periodic/component.full-width-slideshow/'}
-        ]
-      }
-    },
-    clean: ['../../public/periodic/component.full-width-slideshow/'],
-    watch: {
-      scripts: {
-        // files: '**/*.js',
-        files: [
-          'Gruntfile.js',
-          'lib/**/*.js',
-          'test/**/*.js',
-          'example/scripts/src/*.js',
-          'example/stylesheets/*.less'
-        ],
-        tasks: ['lint', 'less'],
-        options: {
-          interrupt: true
-        }
-      }
-    },
-    less: {
-      development: {
-        options: {
-          paths: ["example/assets/css"],
-          yuicompress: true
-        },
-        files: {
-          "example/assets/css/app.css": "./public/assets/css/app.less"
-        }
-      }
-    }
-  });
+module.exports = function (grunt) {
+	grunt.initConfig({
+		simplemocha: {
+			options: {
+				globals: ['should', 'window'],
+				timeout: 3000,
+				ignoreLeaks: false,
+				ui: 'bdd',
+				reporter: 'spec'
+			},
+			all: {
+				src: 'test/**/*.js'
+			}
+		},
+		jshint: {
+			options: {
+				jshintrc: '.jshintrc'
+			},
+			all: [
+				'Gruntfile.js',
+				'index.js',
+				'lib/**/*.js',
+				'resources/**/*.js',
+				'resources/**/*.ejs',
+				'test/**/*.js',
+			]
+		},
+		jsbeautifier: {
+			files: ['<%= jshint.all %>', '!resources/template/component_full_width_slideshow.ejs'],
+			options: {
+				config: '.jsbeautify'
+			}
+		},
+		jsdoc: {
+			dist: {
+				src: ['lib/*.js', 'test/*.js'],
+				options: {
+					destination: 'doc/html',
+					configure: 'jsdoc.json'
+				}
+			}
+		},
+		browserify: {
+			dist: {
+				files: [{
+					expand: true,
+					cwd: 'resources',
+					src: ['**/*_src.js'],
+					dest: 'example',
+					rename: function (dest, src) {
+						var finallocation = path.join(dest, src);
+						finallocation = finallocation.replace('_src', '_build');
+						finallocation = finallocation.replace('resources', 'example');
+						finallocation = path.resolve(finallocation);
+						return finallocation;
+					}
+				}],
+				options: {}
+			}
+		},
+		uglify: {
+			options: {
+				sourceMap: true,
+				compress: {
+					drop_console: false
+				}
+			},
+			all: {
+				files: [{
+					expand: true,
+					cwd: 'example',
+					src: ['**/*_build.js'],
+					dest: 'example',
+					rename: function (dest, src) {
+						var finallocation = path.join(dest, src);
+						finallocation = finallocation.replace('_build', '.min');
+						finallocation = path.resolve(finallocation);
+						return finallocation;
+					}
+				}]
+			}
+		},
+		copy: {
+			main: {
+				cwd: 'example',
+				expand: true,
+				src: '**/*.*',
+				dest: '../../../example/themes/periodicjs.theme.periodical',
+			},
+		},
+		less: {
+			development: {
+				options: {
+					sourceMap: true,
+					yuicompress: true,
+					compress: true
+				},
+				files: {
+					'example/stylesheets/component.full-width-slideshow.css': 'resources/stylesheets/component.full-width-slideshow.less',
+					'example/stylesheets/example.css': 'resources/stylesheets/example.less'
+				}
+			}
+		},
+		template: {
+			all: {
+				files: [{
+					expand: true,
+					cwd: 'resources/template',
+					src: ['pages/*.ejs', 'index.ejs', '!shared/**/*.ejs'],
+					dest: 'example',
+					ext: '.html'
+				}],
+				variables: {
+					env: true
+				}
+			}
+		},
+		watch: {
+			scripts: {
+				// files: '**/*.js',
+				files: [
+					'Gruntfile.js',
+					'index.js',
+					'lib/**/*.js',
+					'resources/**/*.js',
+					'resources/**/*.less',
+					'resources/**/*.ejs',
+					'test/**/*.js',
+				],
+				tasks: ['lint', 'packagejs', 'less', 'html', /*'doc',*/ 'test'],
+				options: {
+					interrupt: true
+				}
+			}
+		}
+	});
 
-  grunt.loadNpmTasks('grunt-simple-mocha');
-  grunt.loadNpmTasks('grunt-jsbeautifier');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-less');
 
+	// Loading dependencies
+	for (var key in grunt.file.readJSON('package.json').devDependencies) {
+		if (key.indexOf('grunt') === 0 && key !== 'grunt') {
+			grunt.loadNpmTasks(key);
+		}
+	}
 
-  grunt.registerTask('default', ['jshint', 'simplemocha']);
-  grunt.registerTask('lint', 'jshint');
-  grunt.registerTask('test', 'simplemocha');
-
-  grunt.event.on('watch', function(action, filepath, target) {
-    exec("browserify "+__dirname+"/example/scripts/src/main.js -o "+__dirname+"/example/scripts/example.js");
-    grunt.log.writeln(target + ': ' + filepath + ' has ' + action);
-  });
+	grunt.registerTask('default', ['jshint', 'simplemocha']);
+	grunt.registerTask('lint', 'jshint', 'jsbeautifier');
+	grunt.registerTask('packagejs', ['browserify', 'uglify']);
+	grunt.registerTask('doc', 'jsdoc');
+	grunt.registerTask('test', 'simplemocha');
+	grunt.registerTask('html', 'newer:template');
 };

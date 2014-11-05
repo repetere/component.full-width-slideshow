@@ -1,39 +1,46 @@
 {
-  "title": "Periodic Component Full width slideshow",
-  "name": "periodic.component.full-width-slideshow",
-  "description": "A very simple 100% width slider that scales down to mobile.",
-  "version": "0.1.2",
+  "title": "Periodic Component Full Width Slideshow",
+  "name": "periodicjs.component.full-width-slideshow",
+  "description": "A very simple 100% width slider that scales down to mobile. This slider has a 100% width layout and it is responsive. It operates with CSS transitions and the image is wrapped with an anchor. The anchor can be replaced by a division if no linking is needed. With a max-width set to 100%, the image will size down for smaller screens. Inspired by http://tympanus.net/codrops/2013/02/26/full-width-image-slider/",
+  "version": "1.0.0",
   "main": "index.js",
   "engines": {
     "node": ">=0.10.x"
   },
   "scripts": {
-    "test": "mocha -R spec --recursive",
-    "install": "grunt copy",
-    "uninstall": "grunt clean",
-    "watch": "grunt watch"
+    "test": "mocha -R spec --recursive"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:getperiodic/component.full-width-slideshow.git"
+    "url": "git@github.com:typesettin/component.full-width-slideshow.git"
   },
   "dependencies": {
-    "classie": "0.0.1",
-    "grunt-contrib-copy": "0.4.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "util-extend": "~1.0.1",
-    "ejs": "~0.8.5",
-    "hammerjs": "~1.0.5",
-    "detectcss": "~1.0.2"
+    "classie": "^0.1.0",
+    "detectcss": "^1.0.2",
+    "hammerjs": "^2.0.4",
+    "util-extend": ">=1.0.1"
   },
   "devDependencies": {
-    "chai": "1.5.0",
-    "grunt": "0.4.1",
-    "grunt-contrib-jshint": "0.4.3",
-    "grunt-contrib-copy": "0.4.1",
-    "grunt-simple-mocha": "0.4.0",
-    "grunt-jsbeautifier": "0.1.7",
-    "mocha": "1.9.0"
+    "browserify": "~4.2.1",
+    "chai": "1.9.1",
+    "grunt": ">=0.4.5",
+    "grunt-contrib-jshint": ">=0.4.3",
+    "grunt-contrib-watch": ">=0.4.1",
+    "grunt-simple-mocha": ">=0.4.0",
+    "grunt-jsbeautifier": ">=0.2.7",
+    "grunt-contrib-copy": ">=0.5.0",
+    "grunt-browserify": ">=2.1.3",
+    "grunt-contrib-less": ">=0.11.3",
+    "grunt-jsdoc": ">=0.5.6",
+    "grunt-contrib-uglify": ">=0.4.0",
+    "grunt-contrib-cssmin": ">=0.9.0",
+    "grunt-templater": ">=0.0.6",
+    "grunt-newer": ">=0.7.0",
+    "jsdoc": "3.3.0-alpha5",
+    "mocha": "1.9.0",
+    "uglify-js": "^2.4.15",
+    "uglifyify": "^2.5.0",
+    "ejs": ">=0.8.5"
   },
   "keywords": [
     "Periodic Decoupled Framework",
