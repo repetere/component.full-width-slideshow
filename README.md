@@ -1,9 +1,10 @@
 # component.full-width-slideshow
 
-A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch & Swipe Support. Inspired by
- Inspired by [Responsive full width slideshow](http://tympanus.net/codrops/2013/02/26/full-width-image-slider/)
+A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch & Swipe Support. Inspired by [Responsive full width slideshow](http://tympanus.net/codrops/2013/02/26/full-width-image-slider/)
 
- [API Documenation](https://github.com/typesettin/component.full-width-slideshow/blob/master/doc/api.md)
+[API Documenation](https://github.com/typesettin/component.full-width-slideshow/blob/master/doc/api.md)
+ 
+[![Full Width Slideshow](https://raw.githubusercontent.com/typesettin/component.full-width-slideshow/master/example/img/slideshowscreenshot.png)](https://raw.githubusercontent.com/typesettin/component.full-width-slideshow/master/example/img/slideshowscreenshot.png)
 
 ## Example
 
