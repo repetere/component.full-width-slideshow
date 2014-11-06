@@ -114,8 +114,8 @@ fullWidthSlideshow.prototype._config = function () {
 		var nav = document.createElement('nav');
 		nav.innerHTML = '<span class="p_c_fws-slideprev" style="display:none;">&lt;</span><span class="p_c_fws-slidenext">&gt;</span>';
 		this.$el.appendChild(nav);
-		this.$navPrev = this.$el.getElementsByClassName('p_c_fws-slideprev')[0];
-		this.$navNext = this.$el.getElementsByClassName('p_c_fws-slidenext')[0];
+		this.$navPrev = this.$el.querySelector('.p_c_fws-slideprev');
+		this.$navNext = this.$el.querySelector('.p_c_fws-slidenext');
 
 
 		var dots = '';
@@ -129,7 +129,7 @@ fullWidthSlideshow.prototype._config = function () {
 		// console.log("navDots",navDots);
 		navDots.innerHTML = dots;
 		this.$el.appendChild(navDots);
-		this.$navDots = navDots.getElementsByTagName('span');
+		this.$navDots = navDots.querySelectorAll('span');
 	}
 };
 
@@ -150,31 +150,25 @@ fullWidthSlideshow.prototype._initEvents = function () {
 			this._navigate('next');
 		}.bind(this));
 	}
-	self.$navPrev.addEventListener('mouseenter', function (e) {
-		console.log('clicked next', e);
-		this._navigate('next');
-	}.bind(this));
-
 
 	if (this.itemsCount > 1) {
 		this.$navPrev.addEventListener('click', function () {
 			this._navigate('previous');
 		}.bind(this));
 
-		this.$navNext.addEventListener('click', function (e) {
-			console.log('clicked next', e);
+		this.$navNext.addEventListener('click', function () {
 			this._navigate('next');
 		}.bind(this));
 
 
-		this.$navDotDom = this.$el.getElementsByClassName('p_c_fws-slidedots')[0];
+		this.$navDotDom = this.$el.querySelector('.p_c_fws-slidedots');
 
 		this.$navDotDom.addEventListener('click', function (event) {
 			var target = getEventTarget(event);
 			if (target.tagName === 'SPAN') {
 				this._jump(target.getAttribute('data-itr'));
 			}
-		});
+		}.bind(this));
 	}
 };
 

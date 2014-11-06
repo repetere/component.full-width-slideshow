@@ -49,6 +49,7 @@ a:hover {
 	float: left;
 	font-weight: 400;
 	width:100%;
+	word-break: break-word;
 }
 
 .container > header > span {
@@ -150,6 +151,17 @@ a:hover {
 	color: #fff;
 }
 
+.container {
+	article{
+		text-align: center;
+		figure{
+			margin: auto;
+			// max-width: 30em;
+			// max-height: 30em;
+		}
+	}
+}
+
 .bp-icon-next:after {
 	content: "\e000";
 }
@@ -169,6 +181,21 @@ a:hover {
 p.info {
 	text-align: center;
 	padding: 20px;
+}
+
+@media screen and (max-width: 28em) {
+	.container{
+		.p_c_fws-slideshow{
+			article{
+				figure{
+					img{
+						max-height:8em;
+					}
+				}
+			}
+			
+		}
+	}
 }
 
 @media screen and (max-width: 55em) {
