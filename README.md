@@ -1,7 +1,7 @@
 # component.full-width-slideshow
 
-100% width tabbed content with some example media queries for smaller screens.
- Inspired by [Responsive full width tabs](http://tympanus.net/codrops/2014/03/21/responsive-full-width-tabs/)
+A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch & Swipe Support. Inspired by
+ Inspired by [Responsive full width slideshow](http://tympanus.net/codrops/2013/02/26/full-width-image-slider/)
 
  [API Documenation](https://github.com/typesettin/component.full-width-slideshow/blob/master/doc/api.md)
 
@@ -15,20 +15,18 @@ Check out `example/index.html`, the example javascript for the example page is `
 $ npm install periodicjs.component.full-width-slideshow
 ```
 
-The tab component is a browserify javascript module.
+The full width slideshow component is a browserified javascript module.
 
 ## Usage
 
 *JavaScript*
 ```javascript
-var ComponentTabs = require('periodicjs.component.full-width-slideshow'),
-	myTabs;
+var fullWidthSlideshow = require('periodicjs.component.full-width-slideshow'),
+	mySlideshow;
 //initialize nav component after the dom has loaded
 window.addEventListener('load',function(){
-	var tabelement = document.getElementById('tabs');
-	myTabs = new ComponentTabs(tabelement);
-	//expose your nav component to the window global namespace
-	window.myNav = myNav;
+	var tabelement = document.getElementById(tabelement);
+	mySlideshow = new fullWidthSlideshow({element:'myslideshow'});
 });
 ```
 
@@ -41,30 +39,18 @@ window.addEventListener('load',function(){
   	<script src='[path/to/browserify/bundle].js'></script>
 	</head>
 	<body>
-		 <div id="tabs" class="tabs">
-      <nav>
+		 <div id="myslideshow" class="myslideshow p_c_fws-slideshow  p_c_fws-slideshow-preview">
         <ul>
           <li>
-            tab1
+            slideshow slide 1, this can be any html
           </li>
           <li>
-            tab2
+            slideshow slide 2, anything can go here
           </li>
           <li>
-            tab3
+            slideshow slide 3
           </li>
         </ul>
-      </nav>
-      <div class="content">
-        <section id="section-1">
-          any html
-        </section>
-        <section id="section-2">
-          can go in here
-        </section>
-        <section id="section-3">
-          this is fully responsive
-        </section>
       </div>
       <!-- /content -->
     </div>
@@ -76,7 +62,8 @@ window.addEventListener('load',function(){
 ##API
 
 ```javascript
-myNav.showTab(1); //show tab at index '1'
+mySlideshow.jump(3); //jump to slideshow at slide '3'
+mySlideshow.navigate('next'); //jump to next slide
 ```
 ##Development
 *Make sure you have grunt installed*
@@ -87,6 +74,12 @@ $ npm install -g grunt-cli
 Then run grunt watch
 ```
 $ grunt watch
+```
+
+For generating documentation
+```
+$ grunt doc
+$ jsdoc2md lib/**/*.js index.js > doc/api.md
 ```
 
 ##Notes

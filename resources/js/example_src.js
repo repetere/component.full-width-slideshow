@@ -11,7 +11,8 @@ var slideshowEvents = function () {
 
 window.onload = function () {
 	fullWidthSlideshow1 = new fullWidthSlideshow({
-		element: 'p_c_lvs-id2'
+		element: document.querySelector('#myslidedshow')
 	});
 	slideshowEvents();
+	window.myslideshow = fullWidthSlideshow1;
 };

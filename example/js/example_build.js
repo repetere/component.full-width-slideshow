@@ -22,7 +22,6 @@ module.exports = require('./lib/component.full-width-slideshow');
 
 var classie = require('classie'),
 	extend = require('util-extend'),
-	ejs = require('ejs'),
 	events = require('events'),
 	util = require('util'),
 	Hammer = require('hammerjs'),
@@ -32,15 +31,34 @@ var getEventTarget = function (e) {
 	e = e || window.event;
 	return e.target || e.srcElement;
 };
-// window.Modernizr = Modernizr;
+
+/**
+ * A module that represents a full with slideshow componenet object, a component.full-width-slideshow is a slideshow.
+ * @{@link https://github.com/typesettin/component.full-width-slideshow}
+ * @author Yaw Joseph Etse
+ * @copyright Copyright (c) 2014 Typesettin. All rights reserved.
+ * @license MIT
+ * @constructor fullWidthSlideshow
+ * @requires module:util-extent
+ * @requires module:util
+ * @requires module:events
+ * @requires module:hammerjs
+ * @requires module:detectcss
+ * @param {object} config {el -  element of tab container}
+ * @param {object} options configuration options
+ */
 var fullWidthSlideshow = function (config) {
 	// console.log(config);
-	this.$el = document.getElementById(config.element);
+	this.$el = config.element;
 	this._init(config.options);
+	this.jump = this._jump;
+	this.slide = this._slide;
+	this.navigate = this._navigate;
 };
 
 util.inherits(fullWidthSlideshow, events.EventEmitter);
 
+/** module default configuration */
 fullWidthSlideshow.prototype._init = function (options) {
 	var defaults = {
 		// default transition speed (ms)
@@ -58,10 +76,14 @@ fullWidthSlideshow.prototype._init = function (options) {
 	this._initEvents();
 };
 
+/**
+ * initializes slideshow and shows current slide.
+ * @emits slidesInitialized
+ */
 fullWidthSlideshow.prototype._config = function () {
 	// the list of items
-	this.$list = this.$el.getElementsByTagName('ul')[0];
-	this.$items = this.$list.getElementsByTagName('li');
+	this.$list = this.$el.querySelector('ul');
+	this.$items = this.$list.querySelectorAll('li');
 	// total number of items
 	this.itemsCount = this.$items.length;
 	// support for CSS Transitions & transforms
@@ -131,10 +153,13 @@ fullWidthSlideshow.prototype._config = function () {
 		this.$el.appendChild(navDots);
 		this.$navDots = navDots.querySelectorAll('span');
 	}
+	this.emit('slidesInitialized');
 };
 
+/**
+ * handle slideshow click events.
+ */
 fullWidthSlideshow.prototype._initEvents = function () {
-	var self = this;
 	if (this.options) {
 		var hammertime = new Hammer(this.$el, {
 			drag_block_horizontal: true
@@ -172,8 +197,12 @@ fullWidthSlideshow.prototype._initEvents = function () {
 	}
 };
 
+/**
+ * move slideshow to slide based on the direction.
+ * @param {string} direction (previous|next) slide
+ * @emits slided
+ */
 fullWidthSlideshow.prototype._navigate = function (direction) {
-
 	// do nothing if the list is currently moving
 	if (this.isAnimating) {
 		return false;
@@ -195,6 +224,11 @@ fullWidthSlideshow.prototype._navigate = function (direction) {
 	// console.log('this._slide()',this._slide());
 
 };
+
+/**
+ * slide to show this.current(index) slide.
+ * @emits slided
+ */
 fullWidthSlideshow.prototype._slide = function () {
 
 	// check which navigation arrows should be shown
@@ -221,6 +255,11 @@ fullWidthSlideshow.prototype._slide = function () {
 	}
 	this.emit('slided', this.current);
 };
+
+
+/**
+ * update slideshow ui.
+ */
 fullWidthSlideshow.prototype._toggleNavControls = function () {
 
 	// if the current item is the first one in the list, the left arrow is not shown
@@ -246,6 +285,10 @@ fullWidthSlideshow.prototype._toggleNavControls = function () {
 	// this.$navDots[this.old].removeClass( 'p_c_fws-cuurentdot' ).end().eq( this.current ).addClass( 'p_c_fws-cuurentdot' );
 
 };
+/**
+ * jump to specific slide.
+ * @param {number} position slide to show
+ */
 fullWidthSlideshow.prototype._jump = function (position) {
 
 	// do nothing if clicking on the current dot, or if the list is currently moving
@@ -260,7 +303,9 @@ fullWidthSlideshow.prototype._jump = function (position) {
 	this._slide();
 
 };
-/***/
+/**
+ * delete/remove slideshow elements
+ */
 fullWidthSlideshow.prototype.destroy = function () {
 	if (this.itemsCount > 1) {
 		this.$navPrev.parent().remove();
@@ -280,7 +325,7 @@ if (typeof module === 'object') {
 	module.exports = fullWidthSlideshow;
 }
 
-},{"classie":3,"detectcss":5,"ejs":7,"events":11,"hammerjs":17,"util":16,"util-extend":18}],3:[function(require,module,exports){
+},{"classie":3,"detectcss":5,"events":7,"hammerjs":12,"util":11,"util-extend":13}],3:[function(require,module,exports){
 /*
  * classie
  * http://github.com/typesettin/classie
@@ -423,601 +468,6 @@ exports.prefixed = function(style){
     return false;
 };
 },{}],7:[function(require,module,exports){
-
-/*!
- * EJS
- * Copyright(c) 2012 TJ Holowaychuk <tj@vision-media.ca>
- * MIT Licensed
- */
-
-/**
- * Module dependencies.
- */
-
-var utils = require('./utils')
-  , path = require('path')
-  , dirname = path.dirname
-  , extname = path.extname
-  , join = path.join
-  , fs = require('fs')
-  , read = fs.readFileSync;
-
-/**
- * Filters.
- *
- * @type Object
- */
-
-var filters = exports.filters = require('./filters');
-
-/**
- * Intermediate js cache.
- *
- * @type Object
- */
-
-var cache = {};
-
-/**
- * Clear intermediate js cache.
- *
- * @api public
- */
-
-exports.clearCache = function(){
-  cache = {};
-};
-
-/**
- * Translate filtered code into function calls.
- *
- * @param {String} js
- * @return {String}
- * @api private
- */
-
-function filtered(js) {
-  return js.substr(1).split('|').reduce(function(js, filter){
-    var parts = filter.split(':')
-      , name = parts.shift()
-      , args = parts.join(':') || '';
-    if (args) args = ', ' + args;
-    return 'filters.' + name + '(' + js + args + ')';
-  });
-};
-
-/**
- * Re-throw the given `err` in context to the
- * `str` of ejs, `filename`, and `lineno`.
- *
- * @param {Error} err
- * @param {String} str
- * @param {String} filename
- * @param {String} lineno
- * @api private
- */
-
-function rethrow(err, str, filename, lineno){
-  var lines = str.split('\n')
-    , start = Math.max(lineno - 3, 0)
-    , end = Math.min(lines.length, lineno + 3);
-
-  // Error context
-  var context = lines.slice(start, end).map(function(line, i){
-    var curr = i + start + 1;
-    return (curr == lineno ? ' >> ' : '    ')
-      + curr
-      + '| '
-      + line;
-  }).join('\n');
-
-  // Alter exception message
-  err.path = filename;
-  err.message = (filename || 'ejs') + ':'
-    + lineno + '\n'
-    + context + '\n\n'
-    + err.message;
-
-  throw err;
-}
-
-/**
- * Parse the given `str` of ejs, returning the function body.
- *
- * @param {String} str
- * @return {String}
- * @api public
- */
-
-var parse = exports.parse = function(str, options){
-  var options = options || {}
-    , open = options.open || exports.open || '<%'
-    , close = options.close || exports.close || '%>'
-    , filename = options.filename
-    , compileDebug = options.compileDebug !== false
-    , buf = "";
-
-  buf += 'var buf = [];';
-  if (false !== options._with) buf += '\nwith (locals || {}) { (function(){ ';
-  buf += '\n buf.push(\'';
-
-  var lineno = 1;
-
-  var consumeEOL = false;
-  for (var i = 0, len = str.length; i < len; ++i) {
-    var stri = str[i];
-    if (str.slice(i, open.length + i) == open) {
-      i += open.length
-
-      var prefix, postfix, line = (compileDebug ? '__stack.lineno=' : '') + lineno;
-      switch (str[i]) {
-        case '=':
-          prefix = "', escape((" + line + ', ';
-          postfix = ")), '";
-          ++i;
-          break;
-        case '-':
-          prefix = "', (" + line + ', ';
-          postfix = "), '";
-          ++i;
-          break;
-        default:
-          prefix = "');" + line + ';';
-          postfix = "; buf.push('";
-      }
-
-      var end = str.indexOf(close, i);
-
-      if (end < 0){
-        throw new Error('Could not find matching close tag "' + close + '".');
-      }
-
-      var js = str.substring(i, end)
-        , start = i
-        , include = null
-        , n = 0;
-
-      if ('-' == js[js.length-1]){
-        js = js.substring(0, js.length - 2);
-        consumeEOL = true;
-      }
-
-      if (0 == js.trim().indexOf('include')) {
-        var name = js.trim().slice(7).trim();
-        if (!filename) throw new Error('filename option is required for includes');
-        var path = resolveInclude(name, filename);
-        include = read(path, 'utf8');
-        include = exports.parse(include, { filename: path, _with: false, open: open, close: close, compileDebug: compileDebug });
-        buf += "' + (function(){" + include + "})() + '";
-        js = '';
-      }
-
-      while (~(n = js.indexOf("\n", n))) n++, lineno++;
-      if (js.substr(0, 1) == ':') js = filtered(js);
-      if (js) {
-        if (js.lastIndexOf('//') > js.lastIndexOf('\n')) js += '\n';
-        buf += prefix;
-        buf += js;
-        buf += postfix;
-      }
-      i += end - start + close.length - 1;
-
-    } else if (stri == "\\") {
-      buf += "\\\\";
-    } else if (stri == "'") {
-      buf += "\\'";
-    } else if (stri == "\r") {
-      // ignore
-    } else if (stri == "\n") {
-      if (consumeEOL) {
-        consumeEOL = false;
-      } else {
-        buf += "\\n";
-        lineno++;
-      }
-    } else {
-      buf += stri;
-    }
-  }
-
-  if (false !== options._with) buf += "'); })();\n} \nreturn buf.join('');";
-  else buf += "');\nreturn buf.join('');";
-  return buf;
-};
-
-/**
- * Compile the given `str` of ejs into a `Function`.
- *
- * @param {String} str
- * @param {Object} options
- * @return {Function}
- * @api public
- */
-
-var compile = exports.compile = function(str, options){
-  options = options || {};
-  var escape = options.escape || utils.escape;
-
-  var input = JSON.stringify(str)
-    , compileDebug = options.compileDebug !== false
-    , client = options.client
-    , filename = options.filename
-        ? JSON.stringify(options.filename)
-        : 'undefined';
-
-  if (compileDebug) {
-    // Adds the fancy stack trace meta info
-    str = [
-      'var __stack = { lineno: 1, input: ' + input + ', filename: ' + filename + ' };',
-      rethrow.toString(),
-      'try {',
-      exports.parse(str, options),
-      '} catch (err) {',
-      '  rethrow(err, __stack.input, __stack.filename, __stack.lineno);',
-      '}'
-    ].join("\n");
-  } else {
-    str = exports.parse(str, options);
-  }
-
-  if (options.debug) console.log(str);
-  if (client) str = 'escape = escape || ' + escape.toString() + ';\n' + str;
-
-  try {
-    var fn = new Function('locals, filters, escape, rethrow', str);
-  } catch (err) {
-    if ('SyntaxError' == err.name) {
-      err.message += options.filename
-        ? ' in ' + filename
-        : ' while compiling ejs';
-    }
-    throw err;
-  }
-
-  if (client) return fn;
-
-  return function(locals){
-    return fn.call(this, locals, filters, escape, rethrow);
-  }
-};
-
-/**
- * Render the given `str` of ejs.
- *
- * Options:
- *
- *   - `locals`          Local variables object
- *   - `cache`           Compiled functions are cached, requires `filename`
- *   - `filename`        Used by `cache` to key caches
- *   - `scope`           Function execution context
- *   - `debug`           Output generated function body
- *   - `open`            Open tag, defaulting to "<%"
- *   - `close`           Closing tag, defaulting to "%>"
- *
- * @param {String} str
- * @param {Object} options
- * @return {String}
- * @api public
- */
-
-exports.render = function(str, options){
-  var fn
-    , options = options || {};
-
-  if (options.cache) {
-    if (options.filename) {
-      fn = cache[options.filename] || (cache[options.filename] = compile(str, options));
-    } else {
-      throw new Error('"cache" option requires "filename".');
-    }
-  } else {
-    fn = compile(str, options);
-  }
-
-  options.__proto__ = options.locals;
-  return fn.call(options.scope, options);
-};
-
-/**
- * Render an EJS file at the given `path` and callback `fn(err, str)`.
- *
- * @param {String} path
- * @param {Object|Function} options or callback
- * @param {Function} fn
- * @api public
- */
-
-exports.renderFile = function(path, options, fn){
-  var key = path + ':string';
-
-  if ('function' == typeof options) {
-    fn = options, options = {};
-  }
-
-  options.filename = path;
-
-  var str;
-  try {
-    str = options.cache
-      ? cache[key] || (cache[key] = read(path, 'utf8'))
-      : read(path, 'utf8');
-  } catch (err) {
-    fn(err);
-    return;
-  }
-  fn(null, exports.render(str, options));
-};
-
-/**
- * Resolve include `name` relative to `filename`.
- *
- * @param {String} name
- * @param {String} filename
- * @return {String}
- * @api private
- */
-
-function resolveInclude(name, filename) {
-  var path = join(dirname(filename), name);
-  var ext = extname(name);
-  if (!ext) path += '.ejs';
-  return path;
-}
-
-// express support
-
-exports.__express = exports.renderFile;
-
-/**
- * Expose to require().
- */
-
-if (require.extensions) {
-  require.extensions['.ejs'] = function (module, filename) {
-    filename = filename || module.filename;
-    var options = { filename: filename, client: true }
-      , template = fs.readFileSync(filename).toString()
-      , fn = compile(template, options);
-    module._compile('module.exports = ' + fn.toString() + ';', filename);
-  };
-} else if (require.registerExtension) {
-  require.registerExtension('.ejs', function(src) {
-    return compile(src, {});
-  });
-}
-
-},{"./filters":8,"./utils":9,"fs":10,"path":13}],8:[function(require,module,exports){
-/*!
- * EJS - Filters
- * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
- * MIT Licensed
- */
-
-/**
- * First element of the target `obj`.
- */
-
-exports.first = function(obj) {
-  return obj[0];
-};
-
-/**
- * Last element of the target `obj`.
- */
-
-exports.last = function(obj) {
-  return obj[obj.length - 1];
-};
-
-/**
- * Capitalize the first letter of the target `str`.
- */
-
-exports.capitalize = function(str){
-  str = String(str);
-  return str[0].toUpperCase() + str.substr(1, str.length);
-};
-
-/**
- * Downcase the target `str`.
- */
-
-exports.downcase = function(str){
-  return String(str).toLowerCase();
-};
-
-/**
- * Uppercase the target `str`.
- */
-
-exports.upcase = function(str){
-  return String(str).toUpperCase();
-};
-
-/**
- * Sort the target `obj`.
- */
-
-exports.sort = function(obj){
-  return Object.create(obj).sort();
-};
-
-/**
- * Sort the target `obj` by the given `prop` ascending.
- */
-
-exports.sort_by = function(obj, prop){
-  return Object.create(obj).sort(function(a, b){
-    a = a[prop], b = b[prop];
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
-  });
-};
-
-/**
- * Size or length of the target `obj`.
- */
-
-exports.size = exports.length = function(obj) {
-  return obj.length;
-};
-
-/**
- * Add `a` and `b`.
- */
-
-exports.plus = function(a, b){
-  return Number(a) + Number(b);
-};
-
-/**
- * Subtract `b` from `a`.
- */
-
-exports.minus = function(a, b){
-  return Number(a) - Number(b);
-};
-
-/**
- * Multiply `a` by `b`.
- */
-
-exports.times = function(a, b){
-  return Number(a) * Number(b);
-};
-
-/**
- * Divide `a` by `b`.
- */
-
-exports.divided_by = function(a, b){
-  return Number(a) / Number(b);
-};
-
-/**
- * Join `obj` with the given `str`.
- */
-
-exports.join = function(obj, str){
-  return obj.join(str || ', ');
-};
-
-/**
- * Truncate `str` to `len`.
- */
-
-exports.truncate = function(str, len, append){
-  str = String(str);
-  if (str.length > len) {
-    str = str.slice(0, len);
-    if (append) str += append;
-  }
-  return str;
-};
-
-/**
- * Truncate `str` to `n` words.
- */
-
-exports.truncate_words = function(str, n){
-  var str = String(str)
-    , words = str.split(/ +/);
-  return words.slice(0, n).join(' ');
-};
-
-/**
- * Replace `pattern` with `substitution` in `str`.
- */
-
-exports.replace = function(str, pattern, substitution){
-  return String(str).replace(pattern, substitution || '');
-};
-
-/**
- * Prepend `val` to `obj`.
- */
-
-exports.prepend = function(obj, val){
-  return Array.isArray(obj)
-    ? [val].concat(obj)
-    : val + obj;
-};
-
-/**
- * Append `val` to `obj`.
- */
-
-exports.append = function(obj, val){
-  return Array.isArray(obj)
-    ? obj.concat(val)
-    : obj + val;
-};
-
-/**
- * Map the given `prop`.
- */
-
-exports.map = function(arr, prop){
-  return arr.map(function(obj){
-    return obj[prop];
-  });
-};
-
-/**
- * Reverse the given `obj`.
- */
-
-exports.reverse = function(obj){
-  return Array.isArray(obj)
-    ? obj.reverse()
-    : String(obj).split('').reverse().join('');
-};
-
-/**
- * Get `prop` of the given `obj`.
- */
-
-exports.get = function(obj, prop){
-  return obj[prop];
-};
-
-/**
- * Packs the given `obj` into json string
- */
-exports.json = function(obj){
-  return JSON.stringify(obj);
-};
-
-},{}],9:[function(require,module,exports){
-
-/*!
- * EJS
- * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
- * MIT Licensed
- */
-
-/**
- * Escape the given string of `html`.
- *
- * @param {String} html
- * @return {String}
- * @api private
- */
-
-exports.escape = function(html){
-  return String(html)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&quot;');
-};
- 
-
-},{}],10:[function(require,module,exports){
-
-},{}],11:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1320,7 +770,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],12:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -1345,235 +795,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],13:[function(require,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,require('_process'))
-},{"_process":14}],14:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -1638,14 +860,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],15:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],16:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2235,7 +1457,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":15,"_process":14,"inherits":12}],17:[function(require,module,exports){
+},{"./support/isBuffer":10,"_process":9,"inherits":8}],12:[function(require,module,exports){
 /*! Hammer.JS - v2.0.4 - 2014-09-28
  * http://hammerjs.github.io/
  *
@@ -4700,7 +3922,7 @@ if (typeof define == TYPE_FUNCTION && define.amd) {
 
 })(window, document, 'Hammer');
 
-},{}],18:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4735,7 +3957,7 @@ function extend(origin, add) {
   return origin;
 }
 
-},{}],19:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var fullWidthSlideshow = require('../../index'),
@@ -4749,9 +3971,10 @@ var slideshowEvents = function () {
 
 window.onload = function () {
 	fullWidthSlideshow1 = new fullWidthSlideshow({
-		element: 'p_c_lvs-id2'
+		element: document.querySelector('#myslidedshow')
 	});
 	slideshowEvents();
+	window.myslideshow = fullWidthSlideshow1;
 };
 
-},{"../../index":1}]},{},[19]);
+},{"../../index":1}]},{},[14]);

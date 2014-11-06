@@ -1,7 +1,7 @@
 {
   "title": "Periodic Component Full Width Slideshow",
   "name": "periodicjs.component.full-width-slideshow",
-  "description": "A very simple 100% width slider that scales down to mobile. This slider has a 100% width layout and it is responsive. It operates with CSS transitions and the image is wrapped with an anchor. The anchor can be replaced by a division if no linking is needed. With a max-width set to 100%, the image will size down for smaller screens. Inspired by http://tympanus.net/codrops/2013/02/26/full-width-image-slider/",
+  "description": "A very simple (framework independent) 100% width HTML slider that scales down to mobile. Added Touch & Swipe Support. Inspired by http://tympanus.net/codrops/2013/02/26/full-width-image-slider/",
   "version": "1.0.0",
   "main": "index.js",
   "engines": {
